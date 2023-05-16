@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    public KeyCode up;
-    public KeyCode down;
     private Rigidbody2D myRB;
     [SerializeField] private float speed;
     [SerializeField] private Camera mainCamera;
@@ -13,6 +11,8 @@ public class PlayerMovement : MonoBehaviour
     private float limitInferior;
     public int player_lives = 4;
     private Vector2 MovementDirection;
+    [SerializeField] AudioSource myAudio;
+    [SerializeField] AudioClip audioeat;
     // Start is called before the first frame update
     void Start()
     {
@@ -38,6 +38,7 @@ public class PlayerMovement : MonoBehaviour
     {
         if (other.tag == "Candy")
         {
+            myAudio.PlayOneShot(audioeat);
             CandyGenerator.instance.ManageCandy(other.gameObject.GetComponent<CandyController>(), this);
         }
     }
