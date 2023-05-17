@@ -13,6 +13,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
+                },
+                {
+                    "name": "silence",
+                    "type": "Button",
+                    "id": "b5162a7e-74ec-4356-96e5-f8a910974b05",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -136,6 +145,17 @@
                     "action": "Movement",
                     "isComposite": false,
                     "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "7bd93b52-52dc-40b5-b36d-fb8ea01cb053",
+                    "path": "<Gamepad>/select",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "silence",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         },

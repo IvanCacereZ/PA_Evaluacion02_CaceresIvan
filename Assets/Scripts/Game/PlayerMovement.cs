@@ -1,22 +1,28 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerMovement : MonoBehaviour
 {
     private Rigidbody2D myRB;
     [SerializeField] private float speed;
     [SerializeField] private Camera mainCamera;
-    private float limitSuperior;
-    private float limitInferior;
-    public int player_lives = 4;
+    [SerializeField] private Text metrosTXT;
+    [SerializeField] private Text vidasTXT;
+    [SerializeField] private Text scoreTXT;
+    public int player_lives = 3;
     private Vector2 MovementDirection;
     [SerializeField] AudioSource myAudio;
-    [SerializeField] AudioClip audioeat;
-    // Start is called before the first frame update
+    [SerializeField] AudioClip audioEat;
+    [SerializeField] AudioClip audioEspecial;
+    [SerializeField] AudioClip audioHurt;
+    [SerializeField] BoxCollider2D colliderBox;
+    int metros = 0;
+    int score = 0;
     void Start()
     {
         myRB = GetComponent<Rigidbody2D>();
+        InvokeRepeating("AddOneMetro", 1f, 1f);
     }
     public void UpdateMovementData(Vector2 newMovementDirection)
     {
@@ -27,6 +33,9 @@ public class PlayerMovement : MonoBehaviour
     void Update()
     {
         MoveThePlayer();
+        metrosTXT.text = "metros: " + metros;
+        vidasTXT.text = "vida: " + player_lives;
+        scoreTXT.text = "Score: " + score;
     }
     void MoveThePlayer()
     {
@@ -38,8 +47,26 @@ public class PlayerMovement : MonoBehaviour
     {
         if (other.tag == "Candy")
         {
-            myAudio.PlayOneShot(audioeat);
+            myAudio.PlayOneShot(audioEat);
+            score = score + other.gameObject.GetComponent<CandyController>().Score;
             CandyGenerator.instance.ManageCandy(other.gameObject.GetComponent<CandyController>(), this);
+        }
+        else if (other.tag == "Especial")
+        {
+            myAudio.PlayOneShot(audioEspecial);
+            score = score * other.gameObject.GetComponent<CandyController>().Score;
+            CandyGenerator.instance.ManageCandy(other.gameObject.GetComponent<CandyController>(), this);
+        }
+        else if (other.tag == "Enemy")
+        {
+            transform.position = new Vector2(-5f, 0f);
+            StartCoroutine(ActivarColliderTemporalmente(1.0f));
+            myAudio.PlayOneShot(audioHurt);
+            CandyGenerator.instance.ManageCandy(other.gameObject.GetComponent<CandyController>(), this);
+        }
+        else
+        {
+            return;
         }
     }
     Vector2 CameraDirection(Vector2 movementDirection)
@@ -53,5 +80,15 @@ public class PlayerMovement : MonoBehaviour
         cameraRight.z = 0f;
 
         return cameraForward * movementDirection.y + cameraRight * movementDirection.x;
+    }
+    private void AddOneMetro()
+    {
+        metros++;
+    }
+    IEnumerator ActivarColliderTemporalmente(float time)
+    {
+        colliderBox.enabled = false;
+        yield return new WaitForSeconds(time);
+        colliderBox.enabled = true;
     }
 }

@@ -6,6 +6,7 @@ public class CandyController : MonoBehaviour
 {
     public int frame;
     public int lifeChanges;
+    public int Score;
 
     void Update()
     {
