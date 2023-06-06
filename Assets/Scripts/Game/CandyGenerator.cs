@@ -12,6 +12,8 @@ public class CandyGenerator : MonoBehaviour
     private float limitSuperior;
     private float limitInferior;
     public List<GameObject> actual_candies = new List<GameObject>();
+    [SerializeField] ScoreleaderBoard leaderBoard;
+    int loadSceneGameOver = 0;
 
     void Awake()
     {
@@ -21,13 +23,10 @@ public class CandyGenerator : MonoBehaviour
         }
         instance = this;
     }
-    // Start is called before the first frame update
     void Start()
     {
         SetMinMax();
     }
-
-    // Update is called once per frame
     void Update()
     {
         actual_time += Time.deltaTime;
@@ -48,9 +47,9 @@ public class CandyGenerator : MonoBehaviour
         limitSuperior = (bounds.y * 0.9f);
     }
 
-    public void ManageCandy(CandyController candy_script, PlayerMovement player_script = null)
+    public void ManageCandy(CandyController candy_script, GameObject player_script = null)
     {
-        if (player_script == null)
+        if (player_script.GetComponent<PlayerMovement>() == null)
         {
             Destroy(candy_script.gameObject);
             return;
@@ -60,17 +59,22 @@ public class CandyGenerator : MonoBehaviour
             SceneManager.LoadScene("GameOver");
             return;
         }
-        int lives = player_script.player_lives;
+        int lives = player_script.GetComponent<PlayerMovement>().player_lives;
         int live_changer = candy_script.lifeChanges;
         lives += live_changer;
         print(lives);
         if (lives <= 0)
         {
-            SceneManager.LoadScene("GameOver");
+            leaderBoard.registryNewScore(player_script.GetComponent<PlayerMovement>().GetScore());
+            loadSceneGameOver = loadSceneGameOver + 1;
+            if(loadSceneGameOver >= 2)
+            {
+                SceneManager.LoadScene("GameOver");
+            }
+            player_script.GetComponent<PlayerMovement>().GetTextLives("Derrotado");
+            Destroy(player_script);
         }
-        player_script.player_lives = lives;
+        player_script.GetComponent<PlayerMovement>().player_lives = lives;
         Destroy(candy_script.gameObject);
     }
-
-
 }

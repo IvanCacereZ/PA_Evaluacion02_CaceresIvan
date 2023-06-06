@@ -49,20 +49,20 @@ public class PlayerMovement : MonoBehaviour
         {
             myAudio.PlayOneShot(audioEat);
             score = score + other.gameObject.GetComponent<CandyController>().Score;
-            CandyGenerator.instance.ManageCandy(other.gameObject.GetComponent<CandyController>(), this);
+            CandyGenerator.instance.ManageCandy(other.gameObject.GetComponent<CandyController>(), this.gameObject);
         }
         else if (other.tag == "Especial")
         {
             myAudio.PlayOneShot(audioEspecial);
             score = score * other.gameObject.GetComponent<CandyController>().Score;
-            CandyGenerator.instance.ManageCandy(other.gameObject.GetComponent<CandyController>(), this);
+            CandyGenerator.instance.ManageCandy(other.gameObject.GetComponent<CandyController>(), this.gameObject);
         }
         else if (other.tag == "Enemy")
         {
             transform.position = new Vector2(-5f, 0f);
             StartCoroutine(ActivarColliderTemporalmente(1.0f));
             myAudio.PlayOneShot(audioHurt);
-            CandyGenerator.instance.ManageCandy(other.gameObject.GetComponent<CandyController>(), this);
+            CandyGenerator.instance.ManageCandy(other.gameObject.GetComponent<CandyController>(), this.gameObject);
         }
         else
         {
@@ -90,5 +90,13 @@ public class PlayerMovement : MonoBehaviour
         colliderBox.enabled = false;
         yield return new WaitForSeconds(time);
         colliderBox.enabled = true;
+    }
+    public void GetTextLives(string text)
+    {
+        vidasTXT.text = text;
+    }
+    public float GetScore()
+    {
+        return score;
     }
 }
